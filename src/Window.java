@@ -90,7 +90,7 @@ public class Window extends Application implements KinectCallbacks
     {
         try
         {
-            Image backgroundImage = new Image(new FileInputStream("C:\\Users\\Nihar Thakkar\\Documents\\JavaFX Images\\wood_background.jpg"));
+            Image backgroundImage = new Image(new FileInputStream("wood_background.jpg"));
             ImageView backgroundImageView = new ImageView(backgroundImage);
             backgroundImageView.setX(0);
             backgroundImageView.setY(0);
