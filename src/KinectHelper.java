@@ -1,11 +1,11 @@
 import edu.ufl.digitalworlds.j4k.J4KSDK;
 import edu.ufl.digitalworlds.j4k.Skeleton;
 
-public class Kinect extends J4KSDK
+public class KinectHelper extends J4KSDK
 {
-    private KinectCallbacks kinectCallbacks;
+    private KinectHelperCallback kinectHelperCallback;
 
-    Kinect(KinectCallbacks kinectCallbacks)
+    KinectHelper(KinectHelperCallback kinectHelperCallback)
     {
         if (!System.getProperty("os.arch").toLowerCase().contains("64"))
         {
@@ -15,7 +15,7 @@ public class Kinect extends J4KSDK
 
         //start(J4KSDK.SKELETON);
 
-        this.kinectCallbacks = kinectCallbacks;
+        this.kinectHelperCallback = kinectHelperCallback;
 
         /*try
         {
@@ -61,6 +61,6 @@ public class Kinect extends J4KSDK
 
         System.out.println(rightHandX + ", " + rightHandY);
 
-        kinectCallbacks.onRightHandMoved(rightHandX, rightHandY);
+        kinectHelperCallback.onRightHandMoved(rightHandX, rightHandY);
     }
 }
