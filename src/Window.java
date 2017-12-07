@@ -8,6 +8,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.Random;
@@ -70,42 +71,46 @@ public class Window extends Application implements KinectCallbacks
 
     private void initialiseSprites()
     {
-        handSprite = new Sprite();
-        handSprite.setImage("sun.png");
-        handSprite.setPosition(300, 100);
-        handSprite.render(graphicsContext);
-        oldHandX = 300;
-        oldHandY = 100;
+        try
+        {
+            handSprite = new Sprite();
+            handSprite.setImage(new FileInputStream("images\\sun.png"));
+            handSprite.setPosition(300, 100);
+            handSprite.render(graphicsContext);
+            oldHandX = 300;
+            oldHandY = 100;
 
 
-        footballSprite = new Sprite();
-        footballSprite.setImage("earth.png");
-        footballSprite.setPosition(500, 500);
-        footballSprite.render(graphicsContext);
-        oldFootballX = 500;
-        oldFootballY = 500;
+            footballSprite = new Sprite();
+            footballSprite.setImage(new FileInputStream("images\\earth.png"));
+            footballSprite.setPosition(500, 500);
+            footballSprite.render(graphicsContext);
+            oldFootballX = 500;
+            oldFootballY = 500;
+        }
+        catch (FileNotFoundException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     private ImageView getBackgroundImageView()
     {
         try
         {
-            Image backgroundImage = new Image(new FileInputStream("wood_background.jpg"));
+            Image backgroundImage = new Image(new FileInputStream("images\\wood_background.jpg"));
             ImageView backgroundImageView = new ImageView(backgroundImage);
             backgroundImageView.setX(0);
             backgroundImageView.setY(0);
             backgroundImageView.setFitHeight(Constants.STAGE_HEIGHT);
             backgroundImageView.setFitWidth(Constants.STAGE_WIDTH);
-
             return backgroundImageView;
         }
         catch (FileNotFoundException e)
         {
             e.printStackTrace();
-            System.exit(-1);
+            return null;
         }
-
-        return null;
     }
 
     @Override

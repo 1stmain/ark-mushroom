@@ -2,6 +2,8 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
+import java.io.FileInputStream;
+
 public class Sprite
 {
     private Image image;
@@ -27,9 +29,9 @@ public class Sprite
         height = i.getHeight();
     }
 
-    public void setImage(String filename)
+    public void setImage(FileInputStream fileInputStream)
     {
-        Image i = new Image(filename);
+        Image i = new Image(fileInputStream);
         setImage(i);
     }
 
