@@ -2,6 +2,8 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
+import java.io.FileInputStream;
+
 /**
  * This class is used to group all the characteristics of a TextureButton together.
  *
@@ -31,9 +33,9 @@ class TextureButton
         height = i.getHeight();
     }
 
-    void setImage(String filename)
+    void setImage(FileInputStream fileInputStream)
     {
-        Image i = new Image(filename);
+        Image i = new Image(fileInputStream);
         setImage(i);
     }
 
