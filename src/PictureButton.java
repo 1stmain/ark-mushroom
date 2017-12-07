@@ -3,14 +3,14 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
 /**
- * This class is used to group all the characteristics of a Picture button together.
+ * This class is used to group all the characteristics of a PictureButton together.
  *
  * @author Nihar Thakkar
  * @version 1.0
  * @since 07-12-2017
  */
 
-public class Picture
+class PictureButton
 {
     private Image image;
     private double positionX;
@@ -18,43 +18,38 @@ public class Picture
     private double width;
     private double height;
 
-    public Picture()
+    PictureButton()
     {
         positionX = 0;
         positionY = 0;
     }
 
-    public void setImage(Image i)
+    void setImage(Image i)
     {
         image = i;
         width = i.getWidth();
         height = i.getHeight();
     }
 
-    public void setImage(String filename)
+    void setImage(String filename)
     {
         Image i = new Image(filename);
         setImage(i);
     }
 
-    public void setPosition(double x, double y)
+    void setPosition(double x, double y)
     {
         positionX = x;
         positionY = y;
     }
 
-    public void render(GraphicsContext gc)
+    void render(GraphicsContext gc)
     {
         gc.drawImage(image, positionX, positionY);
     }
 
-    public Rectangle2D getBoundary()
+    Rectangle2D getBoundary()
     {
         return new Rectangle2D(positionX, positionY, width, height);
-    }
-
-    public boolean intersects(Sprite sprite)
-    {
-        return sprite.getBoundary().intersects(this.getBoundary());
     }
 }

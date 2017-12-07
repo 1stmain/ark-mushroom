@@ -32,13 +32,13 @@ public class Kinect extends J4KSDK
     @Override
     public void onDepthFrameEvent(short[] shorts, byte[] bytes, float[] floats, float[] floats1)
     {
-
+        // This method is never used
     }
 
     @Override
     public void onColorFrameEvent(byte[] bytes)
     {
-
+        // This method is never used
     }
 
     @Override
