@@ -66,7 +66,7 @@ public class MainApplication extends Application implements KinectHelperCallback
         primaryStage.setScene(scene);
         primaryStage.show();
 
-        cursorImage = new Image(new FileInputStream("images\\hand.jpg"));
+        cursorImage = new Image(new FileInputStream("images\\hand.png"));
 
         kinect = new KinectHelper(this);
         kinect.start(J4KSDK.SKELETON);
