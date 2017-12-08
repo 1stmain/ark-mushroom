@@ -26,6 +26,9 @@ public class MainApplication extends Application implements KinectHelperCallback
 {
     private GraphicsContext graphicsContext;
     private KinectHelper kinect;
+    private Image cursorImage;
+    private float oldX;
+    private float oldY;
 
     public static void main(String[] args)
     {
@@ -63,6 +66,8 @@ public class MainApplication extends Application implements KinectHelperCallback
         primaryStage.setScene(scene);
         primaryStage.show();
 
+        cursorImage = new Image(new FileInputStream("images\\hand.jpg"));
+
         kinect = new KinectHelper(this);
         kinect.start(J4KSDK.SKELETON);
     }
@@ -73,7 +78,7 @@ public class MainApplication extends Application implements KinectHelperCallback
 
         try
         {
-            DropShadow dropShadow = new DropShadow( 16, Color.BLACK );
+            DropShadow dropShadow = new DropShadow(16, Color.BLACK);
 
             Image texture1 = new Image(new FileInputStream("images\\texture1.png"));
             ImageView textureImageView1 = new ImageView(texture1);
@@ -116,7 +121,7 @@ public class MainApplication extends Application implements KinectHelperCallback
 
         try
         {
-            DropShadow dropShadow = new DropShadow( 16, Color.BLACK );
+            DropShadow dropShadow = new DropShadow(16, Color.BLACK);
 
             Image picture1 = new Image(new FileInputStream("images\\picture1.jpeg"));
             ImageView pictureImageView1 = new ImageView(picture1);
@@ -156,6 +161,11 @@ public class MainApplication extends Application implements KinectHelperCallback
     @Override
     public void onRightHandMoved(float x, float y)
     {
-
+        graphicsContext.clearRect(oldX, oldY, 50, 50);
+        graphicsContext.drawImage(cursorImage, x, y);
+        /*graphicsContext.setFill(Color.BLUE);
+        graphicsContext.fillRect(x, y, 10, 10);*/
+        oldX = x;
+        oldY = y;
     }
 }
