@@ -44,6 +44,7 @@ public class KinectHelper extends J4KSDK
     @Override
     public void onSkeletonFrameEvent(boolean[] skeleton_tracked, float[] floats, float[] floats1, byte[] bytes)
     {
+        //blah
         int skeletonNumber = 0;
         for (boolean isSkeletonTracked : skeleton_tracked)
         {
