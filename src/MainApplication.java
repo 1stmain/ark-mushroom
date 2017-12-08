@@ -29,6 +29,7 @@ public class MainApplication extends Application implements KinectHelperCallback
     private Image cursorImage;
     private float oldX;
     private float oldY;
+    private boolean rightHandIsPushed = false;
 
     public static void main(String[] args)
     {
@@ -163,8 +164,13 @@ public class MainApplication extends Application implements KinectHelperCallback
     {
         graphicsContext.clearRect(oldX, oldY, 50, 50);
         graphicsContext.drawImage(cursorImage, x, y);
-        /*graphicsContext.setFill(Color.BLUE);
-        graphicsContext.fillRect(x, y, 10, 10);*/
+
+        if (rightHandIsPushed)
+        {
+            graphicsContext.setFill(Color.BLUE);
+            graphicsContext.fillRect(x, y, 10, 10);
+        }
+
         oldX = x;
         oldY = y;
     }
@@ -172,6 +178,6 @@ public class MainApplication extends Application implements KinectHelperCallback
     @Override
     public void onRightHandPushed(boolean rightHandIsPushed)
     {
-
+        this.rightHandIsPushed = rightHandIsPushed;
     }
 }
