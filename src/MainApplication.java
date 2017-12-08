@@ -1,12 +1,20 @@
 import edu.ufl.digitalworlds.j4k.J4KSDK;
 import javafx.application.Application;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import javax.swing.*;
@@ -18,8 +26,6 @@ public class MainApplication extends Application implements KinectHelperCallback
 {
     private GraphicsContext graphicsContext;
     private KinectHelper kinect;
-    private ArrayList<PictureButton> pictureButtons = new ArrayList<>();
-    private ArrayList<TextureButton> textureButtons = new ArrayList<>();
 
     public static void main(String[] args)
     {
@@ -33,56 +39,118 @@ public class MainApplication extends Application implements KinectHelperCallback
         primaryStage.setFullScreen(true);
         primaryStage.setTitle(Constants.STAGE_TITLE);
 
-        Pane root = new Pane();
+        VBox textureVBox = new VBox(32);
+        textureVBox.setAlignment(Pos.CENTER);
+        textureVBox.setPadding(new Insets(64, 32, 64, 32));
+        textureVBox.getChildren().addAll(getTextureButtons());
+
+        VBox pictureVBox = new VBox(32);
+        pictureVBox.setAlignment(Pos.CENTER);
+        pictureVBox.setPadding(new Insets(64, 32, 64, 32));
+        pictureVBox.getChildren().addAll(getPictureButtons());
+
+        AnchorPane anchorPane = new AnchorPane(textureVBox, pictureVBox);
+        AnchorPane.setLeftAnchor(textureVBox, 0.0);
+        AnchorPane.setRightAnchor(pictureVBox, 0.0);
 
         Canvas canvas = new Canvas(Constants.STAGE_WIDTH, Constants.STAGE_HEIGHT);
         graphicsContext = canvas.getGraphicsContext2D();
 
-        root.getChildren().addAll(canvas);
+        StackPane rootStackPane = new StackPane(anchorPane, canvas);
 
-        Scene scene = new Scene(root);
+        Scene scene = new Scene(rootStackPane);
 
         primaryStage.setScene(scene);
         primaryStage.show();
-
-        initialiseButtons();
 
         kinect = new KinectHelper(this);
         kinect.start(J4KSDK.SKELETON);
     }
 
-    private void initialiseButtons()
+    private ArrayList<ImageView> getTextureButtons()
     {
-        textureButtons.clear();
-        pictureButtons.clear();
+        ArrayList<ImageView> textureImageViews = new ArrayList<>();
 
         try
         {
-            PictureButton pictureButton1 = new PictureButton();
-            pictureButton1.setImage(new FileInputStream("images\\picture1.jpeg"));
-            pictureButton1.setPosition(20, 20);
-            pictureButton1.render(graphicsContext);
+            DropShadow dropShadow = new DropShadow( 16, Color.BLACK );
 
-            PictureButton pictureButton2 = new PictureButton();
-            pictureButton2.setImage(new FileInputStream("images\\picture2.jpg"));
-            pictureButton2.setPosition(20, 200);
-            pictureButton2.render(graphicsContext);
+            Image texture1 = new Image(new FileInputStream("images\\texture1.png"));
+            ImageView textureImageView1 = new ImageView(texture1);
+            textureImageView1.setEffect(dropShadow);
 
-            PictureButton pictureButton3 = new PictureButton();
-            pictureButton3.setImage(new FileInputStream("images\\picture3.jpg"));
-            pictureButton3.setPosition(20, 400);
-            pictureButton3.render(graphicsContext);
+            Image texture2 = new Image(new FileInputStream("images\\texture2.jpg"));
+            ImageView textureImageView2 = new ImageView(texture2);
+            textureImageView2.setEffect(dropShadow);
 
-            PictureButton pictureButton4 = new PictureButton();
-            pictureButton4.setImage(new FileInputStream("images\\picture4.jpg"));
-            pictureButton4.setPosition(20, 600);
-            pictureButton4.render(graphicsContext);
+            Image texture3 = new Image(new FileInputStream("images\\texture3.jpg"));
+            ImageView textureImageView3 = new ImageView(texture3);
+            textureImageView3.setEffect(dropShadow);
+
+            Image texture4 = new Image(new FileInputStream("images\\texture4.png"));
+            ImageView textureImageView4 = new ImageView(texture4);
+            textureImageView4.setEffect(dropShadow);
+
+            Image texture5 = new Image(new FileInputStream("images\\texture5.png"));
+            ImageView textureImageView5 = new ImageView(texture5);
+            textureImageView5.setEffect(dropShadow);
+
+            textureImageViews.add(textureImageView1);
+            textureImageViews.add(textureImageView2);
+            textureImageViews.add(textureImageView3);
+            textureImageViews.add(textureImageView4);
+            textureImageViews.add(textureImageView5);
         }
         catch (FileNotFoundException e)
         {
             e.printStackTrace();
             System.exit(1);
         }
+
+        return textureImageViews;
+    }
+
+    private ArrayList<ImageView> getPictureButtons()
+    {
+        ArrayList<ImageView> pictureImageViews = new ArrayList<>();
+
+        try
+        {
+            DropShadow dropShadow = new DropShadow( 16, Color.BLACK );
+
+            Image picture1 = new Image(new FileInputStream("images\\picture1.jpeg"));
+            ImageView pictureImageView1 = new ImageView(picture1);
+            pictureImageView1.setEffect(dropShadow);
+
+            Image picture2 = new Image(new FileInputStream("images\\picture2.jpg"));
+            ImageView pictureImageView2 = new ImageView(picture2);
+            pictureImageView2.setEffect(dropShadow);
+
+            Image picture3 = new Image(new FileInputStream("images\\picture3.jpg"));
+            ImageView pictureImageView3 = new ImageView(picture3);
+            pictureImageView3.setEffect(dropShadow);
+
+            Image picture4 = new Image(new FileInputStream("images\\picture4.jpg"));
+            ImageView pictureImageView4 = new ImageView(picture4);
+            pictureImageView4.setEffect(dropShadow);
+
+            Image picture5 = new Image(new FileInputStream("images\\picture5.jpg"));
+            ImageView pictureImageView5 = new ImageView(picture5);
+            pictureImageView5.setEffect(dropShadow);
+
+            pictureImageViews.add(pictureImageView1);
+            pictureImageViews.add(pictureImageView2);
+            pictureImageViews.add(pictureImageView3);
+            pictureImageViews.add(pictureImageView4);
+            pictureImageViews.add(pictureImageView5);
+        }
+        catch (FileNotFoundException e)
+        {
+            e.printStackTrace();
+            System.exit(1);
+        }
+
+        return pictureImageViews;
     }
 
     @Override
