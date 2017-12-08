@@ -168,4 +168,10 @@ public class MainApplication extends Application implements KinectHelperCallback
         oldX = x;
         oldY = y;
     }
+
+    @Override
+    public void onRightHandPushed(boolean rightHandIsPushed)
+    {
+
+    }
 }
