@@ -71,7 +71,7 @@ public class KinectHelper extends J4KSDK
         }
         System.out.println(handpush + "" + rightHandZ + " " + oldRightZ);*/
 
-        if (rightHandZ < oldRightZ && oldRightZ - rightHandZ > 0.4)
+        if (rightHandZ < oldRightZ && oldRightZ - rightHandZ > 0.2)
         {
             System.out.println("hand on ");
             isPushed = true;

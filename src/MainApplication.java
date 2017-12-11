@@ -1,5 +1,6 @@
 import edu.ufl.digitalworlds.j4k.J4KSDK;
 import javafx.application.Application;
+import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
@@ -24,12 +25,15 @@ import java.util.ArrayList;
 
 public class MainApplication extends Application implements KinectHelperCallback
 {
-    private GraphicsContext graphicsContext;
-    private KinectHelper kinect;
-    private Image cursorImage;
+    private GraphicsContext cursorGraphicsContext;
+    private GraphicsContext textureGraphicsContext;
+    private Cursor handCursor;
+    private Cursor brushCursor;
     private float oldX;
     private float oldY;
     private boolean rightHandIsPushed = false;
+    private ArrayList<TextureButton> textureButtons = new ArrayList<>();
+    private int currentlySelectedTextureId = 0;
 
     public static void main(String[] args)
     {
@@ -46,7 +50,11 @@ public class MainApplication extends Application implements KinectHelperCallback
         VBox textureVBox = new VBox(32);
         textureVBox.setAlignment(Pos.CENTER);
         textureVBox.setPadding(new Insets(64, 32, 64, 32));
-        textureVBox.getChildren().addAll(getTextureButtons());
+        setTextureButtons();
+        for (TextureButton textureButton : this.textureButtons)
+        {
+            textureVBox.getChildren().add(textureButton.getImageView());
+        }
 
         VBox pictureVBox = new VBox(32);
         pictureVBox.setAlignment(Pos.CENTER);
@@ -57,26 +65,31 @@ public class MainApplication extends Application implements KinectHelperCallback
         AnchorPane.setLeftAnchor(textureVBox, 0.0);
         AnchorPane.setRightAnchor(pictureVBox, 0.0);
 
-        Canvas canvas = new Canvas(Constants.STAGE_WIDTH, Constants.STAGE_HEIGHT);
-        graphicsContext = canvas.getGraphicsContext2D();
+        Canvas cursorCanvas = new Canvas(Constants.STAGE_WIDTH, Constants.STAGE_HEIGHT);
+        cursorGraphicsContext = cursorCanvas.getGraphicsContext2D();
 
-        StackPane rootStackPane = new StackPane(anchorPane, canvas);
+        Canvas textureCanvas = new Canvas(Constants.STAGE_WIDTH, Constants.STAGE_HEIGHT);
+        textureGraphicsContext = textureCanvas.getGraphicsContext2D();
+
+        StackPane rootStackPane = new StackPane(anchorPane, textureCanvas, cursorCanvas);
 
         Scene scene = new Scene(rootStackPane);
 
         primaryStage.setScene(scene);
         primaryStage.show();
 
-        cursorImage = new Image(new FileInputStream("images\\hand.png"));
-
-        kinect = new KinectHelper(this);
+        KinectHelper kinect = new KinectHelper(this);
         kinect.start(J4KSDK.SKELETON);
+
+        handCursor = new Cursor();
+        handCursor.setImage(new FileInputStream("images\\hand.png"));
+
+        brushCursor = new Cursor();
+        brushCursor.setImage(new FileInputStream("images\\brush.png"));
     }
 
-    private ArrayList<ImageView> getTextureButtons()
+    private void setTextureButtons()
     {
-        ArrayList<ImageView> textureImageViews = new ArrayList<>();
-
         try
         {
             DropShadow dropShadow = new DropShadow(16, Color.BLACK);
@@ -84,36 +97,30 @@ public class MainApplication extends Application implements KinectHelperCallback
             Image texture1 = new Image(new FileInputStream("images\\texture1.png"));
             ImageView textureImageView1 = new ImageView(texture1);
             textureImageView1.setEffect(dropShadow);
+            TextureButton textureButton1 = new TextureButton(textureImageView1);
+            textureButton1.setTextureId(1);
 
             Image texture2 = new Image(new FileInputStream("images\\texture2.jpg"));
             ImageView textureImageView2 = new ImageView(texture2);
             textureImageView2.setEffect(dropShadow);
+            TextureButton textureButton2 = new TextureButton(textureImageView2);
+            textureButton2.setTextureId(2);
 
             Image texture3 = new Image(new FileInputStream("images\\texture3.jpg"));
             ImageView textureImageView3 = new ImageView(texture3);
             textureImageView3.setEffect(dropShadow);
+            TextureButton textureButton3 = new TextureButton(textureImageView3);
+            textureButton3.setTextureId(3);
 
-            Image texture4 = new Image(new FileInputStream("images\\texture4.png"));
-            ImageView textureImageView4 = new ImageView(texture4);
-            textureImageView4.setEffect(dropShadow);
-
-            Image texture5 = new Image(new FileInputStream("images\\texture5.png"));
-            ImageView textureImageView5 = new ImageView(texture5);
-            textureImageView5.setEffect(dropShadow);
-
-            textureImageViews.add(textureImageView1);
-            textureImageViews.add(textureImageView2);
-            textureImageViews.add(textureImageView3);
-            textureImageViews.add(textureImageView4);
-            textureImageViews.add(textureImageView5);
+            textureButtons.add(textureButton1);
+            textureButtons.add(textureButton2);
+            textureButtons.add(textureButton3);
         }
         catch (FileNotFoundException e)
         {
             e.printStackTrace();
             System.exit(1);
         }
-
-        return textureImageViews;
     }
 
     private ArrayList<ImageView> getPictureButtons()
@@ -136,19 +143,9 @@ public class MainApplication extends Application implements KinectHelperCallback
             ImageView pictureImageView3 = new ImageView(picture3);
             pictureImageView3.setEffect(dropShadow);
 
-            Image picture4 = new Image(new FileInputStream("images\\picture4.jpg"));
-            ImageView pictureImageView4 = new ImageView(picture4);
-            pictureImageView4.setEffect(dropShadow);
-
-            Image picture5 = new Image(new FileInputStream("images\\picture5.jpg"));
-            ImageView pictureImageView5 = new ImageView(picture5);
-            pictureImageView5.setEffect(dropShadow);
-
             pictureImageViews.add(pictureImageView1);
             pictureImageViews.add(pictureImageView2);
             pictureImageViews.add(pictureImageView3);
-            pictureImageViews.add(pictureImageView4);
-            pictureImageViews.add(pictureImageView5);
         }
         catch (FileNotFoundException e)
         {
@@ -162,13 +159,38 @@ public class MainApplication extends Application implements KinectHelperCallback
     @Override
     public void onRightHandMoved(float x, float y)
     {
-        graphicsContext.clearRect(oldX, oldY, 50, 50);
-        graphicsContext.drawImage(cursorImage, x, y);
-
         if (rightHandIsPushed)
         {
-            graphicsContext.setFill(Color.BLUE);
-            graphicsContext.fillRect(x, y, 10, 10);
+            // Draw the brush cursor
+            cursorGraphicsContext.clearRect(oldX, oldY, 100, 100);
+            brushCursor.setPosition(x, y);
+            brushCursor.render(cursorGraphicsContext);
+
+            switch (currentlySelectedTextureId)
+            {
+                case 1:
+                    textureGraphicsContext.setFill(Color.BLUE);
+                    textureGraphicsContext.fillOval(x, y, 10, 10);
+                    break;
+                case 2:
+                    textureGraphicsContext.setFill(Color.GREEN);
+                    textureGraphicsContext.fillRect(x, y, 10, 10);
+                    break;
+                case 3:
+                    textureGraphicsContext.setFill(Color.RED);
+                    textureGraphicsContext.fillOval(x, y, 10, 10);
+                    break;
+                default:
+                    break;
+
+            }
+        }
+        else
+        {
+            // Draw the hand cursor
+            cursorGraphicsContext.clearRect(oldX, oldY, 100, 100);
+            handCursor.setPosition(x, y);
+            handCursor.render(cursorGraphicsContext);
         }
 
         oldX = x;
@@ -179,5 +201,15 @@ public class MainApplication extends Application implements KinectHelperCallback
     public void onRightHandPushed(boolean rightHandIsPushed)
     {
         this.rightHandIsPushed = rightHandIsPushed;
+
+        for (TextureButton textureButton : this.textureButtons)
+        {
+            if (textureButton.getImageView().getBoundsInParent().intersects(handCursor.getPositionX(),
+                    handCursor.getPositionY(), handCursor.getWidth(), handCursor.getHeight()))
+            {
+                currentlySelectedTextureId = textureButton.getTextureId();
+                break;
+            }
+        }
     }
 }
