@@ -33,7 +33,7 @@ public class MainApplication extends Application implements KinectHelperCallback
     private float oldY;
     private boolean rightHandIsPushed = false;
     private ArrayList<TextureButton> textureButtons = new ArrayList<>();
-    private int currentlySelectedTextureId = 0;
+    private TextureButton currentlySelectedTextureButton = null;
 
     public static void main(String[] args)
     {
@@ -72,6 +72,7 @@ public class MainApplication extends Application implements KinectHelperCallback
         textureGraphicsContext = textureCanvas.getGraphicsContext2D();
 
         StackPane rootStackPane = new StackPane(anchorPane, textureCanvas, cursorCanvas);
+        rootStackPane.setAlignment(Pos.CENTER);
 
         Scene scene = new Scene(rootStackPane);
 
@@ -159,30 +160,33 @@ public class MainApplication extends Application implements KinectHelperCallback
     @Override
     public void onRightHandMoved(float x, float y)
     {
-        if (rightHandIsPushed)
+        if (rightHandIsPushed && x >= 300 && x <= 1000)
         {
             // Draw the brush cursor
             cursorGraphicsContext.clearRect(oldX, oldY, 100, 100);
             brushCursor.setPosition(x, y);
             brushCursor.render(cursorGraphicsContext);
 
-            switch (currentlySelectedTextureId)
+            if (currentlySelectedTextureButton != null)
             {
-                case 1:
-                    textureGraphicsContext.setFill(Color.BLUE);
-                    textureGraphicsContext.fillOval(x, y, 10, 10);
-                    break;
-                case 2:
-                    textureGraphicsContext.setFill(Color.GREEN);
-                    textureGraphicsContext.fillRect(x, y, 10, 10);
-                    break;
-                case 3:
-                    textureGraphicsContext.setFill(Color.RED);
-                    textureGraphicsContext.fillOval(x, y, 10, 10);
-                    break;
-                default:
-                    break;
+                switch (currentlySelectedTextureButton.getTextureId())
+                {
+                    case 1:
+                        textureGraphicsContext.setFill(Color.BLUE);
+                        textureGraphicsContext.fillOval(x, y, 10, 10);
+                        break;
+                    case 2:
+                        textureGraphicsContext.setFill(Color.GREEN);
+                        textureGraphicsContext.fillRect(x, y, 10, 10);
+                        break;
+                    case 3:
+                        textureGraphicsContext.setFill(Color.RED);
+                        textureGraphicsContext.fillOval(x, y, 10, 10);
+                        break;
+                    default:
+                        break;
 
+                }
             }
         }
         else
@@ -202,13 +206,16 @@ public class MainApplication extends Application implements KinectHelperCallback
     {
         this.rightHandIsPushed = rightHandIsPushed;
 
-        for (TextureButton textureButton : this.textureButtons)
+        if (rightHandIsPushed)
         {
-            if (textureButton.getImageView().getBoundsInParent().intersects(handCursor.getPositionX(),
-                    handCursor.getPositionY(), handCursor.getWidth(), handCursor.getHeight()))
+            for (TextureButton textureButton : this.textureButtons)
             {
-                currentlySelectedTextureId = textureButton.getTextureId();
-                break;
+                if (textureButton.getImageView().getBoundsInParent().intersects(handCursor.getPositionX(),
+                        handCursor.getPositionY(), handCursor.getWidth(), handCursor.getHeight()))
+                {
+                    currentlySelectedTextureButton = textureButton;
+                    break;
+                }
             }
         }
     }
