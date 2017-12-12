@@ -57,6 +57,11 @@ public class Cursor
         return this.positionY;
     }
 
+    public Rectangle2D getBoundary()
+    {
+        return new Rectangle2D(positionX, positionY, width, height);
+    }
+
     void render(GraphicsContext gc)
     {
         gc.drawImage(image, positionX, positionY);
