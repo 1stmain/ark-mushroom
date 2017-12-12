@@ -51,6 +51,15 @@ public class KinectHelper extends J4KSDK
         float rightHandX = skeleton.get2DJoint(Skeleton.HAND_RIGHT, Constants.STAGE_WIDTH, Constants.STAGE_HEIGHT)[0];
         float rightHandY = skeleton.get2DJoint(Skeleton.HAND_RIGHT, Constants.STAGE_WIDTH, Constants.STAGE_HEIGHT)[1];
         float rightHandZ = skeleton.get3DJointZ(Skeleton.HAND_RIGHT);
+        float leftHandX = skeleton.get2DJoint(Skeleton.HAND_LEFT, Constants.STAGE_WIDTH, Constants.STAGE_HEIGHT)[0];
+        float leftHandY = skeleton.get2DJoint(Skeleton.HAND_LEFT, Constants.STAGE_WIDTH, Constants.STAGE_HEIGHT)[1];
+        float headY = skeleton.get2DJoint(Skeleton.HEAD, Constants.STAGE_WIDTH, Constants.STAGE_HEIGHT)[1];
+        if(leftHandY - rightHandY < 50 &&  leftHandY > headY){
+
+
+        }
+
+
 
         kinectHelperCallback.onRightHandMoved(rightHandX, rightHandY);
 
