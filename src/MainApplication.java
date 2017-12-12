@@ -1,19 +1,25 @@
 import edu.ufl.digitalworlds.j4k.J4KSDK;
 import javafx.application.Application;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.transform.Transform;
 import javafx.stage.Stage;
 
+import javax.imageio.ImageIO;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -251,5 +257,21 @@ public class MainApplication extends Application implements KinectHelperCallback
             DropShadow dropShadowBlack = new DropShadow(16, Color.BLACK);
             pictureButton.getImageView().setEffect(dropShadowBlack);
         }
+    }
+
+    public static WritableImage pixelScaleAwareCanvasSnapshot(Canvas canvas, double pixelScale) {
+        WritableImage writableImage = new WritableImage((int)Math.rint(pixelScale*canvas.getWidth()), (int)Math.rint(pixelScale*canvas.getHeight()));
+        SnapshotParameters spa = new SnapshotParameters();
+        spa.setTransform(Transform.scale(pixelScale, pixelScale));
+
+
+        File file = new File("CanvasImage.png");
+
+
+        try {
+            ImageIO.write(SwingFXUtils.fromFXImage(canvas.snapshot(spa, writableImage), null), "png", file);
+        } catch (Exception s) {
+        }
+        return canvas.snapshot(spa, writableImage);
     }
 }
