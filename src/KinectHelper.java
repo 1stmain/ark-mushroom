@@ -51,17 +51,8 @@ public class KinectHelper extends J4KSDK
         float rightHandX = skeleton.get2DJoint(Skeleton.HAND_RIGHT, Constants.STAGE_WIDTH, Constants.STAGE_HEIGHT)[0];
         float rightHandY = skeleton.get2DJoint(Skeleton.HAND_RIGHT, Constants.STAGE_WIDTH, Constants.STAGE_HEIGHT)[1];
         float rightHandZ = skeleton.get3DJointZ(Skeleton.HAND_RIGHT);
-        float leftHandX = skeleton.get2DJoint(Skeleton.HAND_LEFT, Constants.STAGE_WIDTH, Constants.STAGE_HEIGHT)[0];
         float leftHandY = skeleton.get2DJoint(Skeleton.HAND_LEFT, Constants.STAGE_WIDTH, Constants.STAGE_HEIGHT)[1];
         float headY = skeleton.get2DJoint(Skeleton.HEAD, Constants.STAGE_WIDTH, Constants.STAGE_HEIGHT)[1];
-        if(leftHandY - rightHandY < 50 &&  leftHandY > headY){
-
-
-        }
-
-
-
-        kinectHelperCallback.onRightHandMoved(rightHandX, rightHandY);
 
         if (!isInitialised)
         {
@@ -80,18 +71,26 @@ public class KinectHelper extends J4KSDK
         }
         System.out.println(handpush + "" + rightHandZ + " " + oldRightZ);*/
 
+        if (leftHandY < headY && rightHandY < headY)
+        {
+            kinectHelperCallback.onBothHandsRaised();
+        }
+
         if (rightHandZ < oldRightZ && oldRightZ - rightHandZ > 0.2)
         {
-            System.out.println("hand on ");
             isPushed = true;
             kinectHelperCallback.onRightHandPushed(true);
         }
+
         if (oldRightZ - rightHandZ < 0.01 && isPushed)
         {
-            System.out.println("hand off ");
             isPushed = false;
             kinectHelperCallback.onRightHandPushed(false);
         }
+
+
+        kinectHelperCallback.onRightHandMoved(rightHandX, rightHandY);
+
         oldRightX = rightHandX;
         oldRightY = rightHandY;
     }
