@@ -1,5 +1,6 @@
 import edu.ufl.digitalworlds.j4k.J4KSDK;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -32,6 +33,7 @@ public class MainApplication extends Application implements KinectHelperCallback
     private Cursor brushCursor;
     private float oldX;
     private float oldY;
+    private Canvas textureCanvas;
     private boolean rightHandIsPushed = false;
     private ArrayList<TextureButton> textureButtons = new ArrayList<>();
     private ArrayList<PictureButton> pictureButtons = new ArrayList<>();
@@ -76,7 +78,7 @@ public class MainApplication extends Application implements KinectHelperCallback
         Canvas cursorCanvas = new Canvas(Constants.STAGE_WIDTH, Constants.STAGE_HEIGHT);
         cursorGraphicsContext = cursorCanvas.getGraphicsContext2D();
 
-        Canvas textureCanvas = new Canvas(Constants.STAGE_WIDTH, Constants.STAGE_HEIGHT);
+        this.textureCanvas = new Canvas(Constants.STAGE_WIDTH, Constants.STAGE_HEIGHT);
         textureGraphicsContext = textureCanvas.getGraphicsContext2D();
 
         StackPane rootStackPane = new StackPane(anchorPane, textureCanvas, cursorCanvas);
@@ -276,10 +278,10 @@ public class MainApplication extends Application implements KinectHelperCallback
     public void onBothHandsRaised()
     {
         System.out.println("Program complete!");
-        System.exit(0);
+        pixelScaleAwareCanvasSnapshot(textureCanvas, 0.5);
     }
 
-    public static void pixelScaleAwareCanvasSnapshot(Canvas canvas, double pixelScale)
+    private static void pixelScaleAwareCanvasSnapshot(Canvas canvas, double pixelScale)
     {
         WritableImage writableImage = new WritableImage((int) Math.rint(pixelScale * canvas.getWidth()), (int) Math.rint(pixelScale * canvas.getHeight()));
         SnapshotParameters spa = new SnapshotParameters();
@@ -288,14 +290,18 @@ public class MainApplication extends Application implements KinectHelperCallback
 
         File file = new File("CanvasImage.png");
 
-
-        try
-        {
-            ImageIO.write(SwingFXUtils.fromFXImage(canvas.snapshot(spa, writableImage), null), "png", file);
-        }
-        catch (Exception s)
-        {
-        }
-//        return canvas.snapshot(spa, writableImage);
+        Platform.runLater(
+                () ->
+                {
+                    try
+                    {
+                        ImageIO.write(SwingFXUtils.fromFXImage(canvas.snapshot(spa, writableImage), null), "png", file);
+                    }
+                    catch (Exception s)
+                    {
+                        s.printStackTrace();
+                        System.exit(1);
+                    }
+                });
     }
 }
