@@ -259,7 +259,7 @@ public class MainApplication extends Application implements KinectHelperCallback
         }
     }
 
-    public static WritableImage pixelScaleAwareCanvasSnapshot(Canvas canvas, double pixelScale) {
+    public static void pixelScaleAwareCanvasSnapshot(Canvas canvas, double pixelScale) {
         WritableImage writableImage = new WritableImage((int)Math.rint(pixelScale*canvas.getWidth()), (int)Math.rint(pixelScale*canvas.getHeight()));
         SnapshotParameters spa = new SnapshotParameters();
         spa.setTransform(Transform.scale(pixelScale, pixelScale));
@@ -272,6 +272,6 @@ public class MainApplication extends Application implements KinectHelperCallback
             ImageIO.write(SwingFXUtils.fromFXImage(canvas.snapshot(spa, writableImage), null), "png", file);
         } catch (Exception s) {
         }
-        return canvas.snapshot(spa, writableImage);
+//        return canvas.snapshot(spa, writableImage);
     }
 }
