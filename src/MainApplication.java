@@ -283,6 +283,12 @@ public class MainApplication extends Application implements KinectHelperCallback
         kinect.stop();
     }
 
+    @Override
+    public void onBothHandsClasped()
+    {
+
+    }
+
     private void initialiseTextures()
     {
         try

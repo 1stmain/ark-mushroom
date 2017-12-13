@@ -4,8 +4,6 @@ import edu.ufl.digitalworlds.j4k.Skeleton;
 public class KinectHelper extends J4KSDK
 {
     private KinectHelperCallback kinectHelperCallback;
-    private float oldRightX = 0;
-    private float oldRightY = 0;
     private float oldRightZ = 0;
     private boolean isPushed = false;
     private boolean isInitialised = false;
@@ -67,8 +65,9 @@ public class KinectHelper extends J4KSDK
             kinectHelperCallback.onBothHandsRaised();
         }
 
-        if( Math.abs(leftHandX - rightHandX) <=100 &&  Math.abs(rightHandY - leftHandY) <= 100){
-
+        if (Math.abs(leftHandX - rightHandX) <= 100 && Math.abs(rightHandY - leftHandY) <= 100)
+        {
+            kinectHelperCallback.onBothHandsClasped();
         }
 
         if (rightHandZ < oldRightZ && oldRightZ - rightHandZ > 0.2)
@@ -85,8 +84,5 @@ public class KinectHelper extends J4KSDK
 
 
         kinectHelperCallback.onRightHandMoved(rightHandX, rightHandY);
-
-        oldRightX = rightHandX;
-        oldRightY = rightHandY;
     }
 }
