@@ -13,6 +13,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -40,6 +41,7 @@ public class MainApplication extends Application implements KinectHelperCallback
     private ArrayList<TextureButton> textureButtons = new ArrayList<>();
     private ArrayList<PictureButton> pictureButtons = new ArrayList<>();
     private Button currentlySelectedButton = null;
+    private Stage primaryStage;
 
     public static void main(String[] args)
     {
@@ -47,8 +49,10 @@ public class MainApplication extends Application implements KinectHelperCallback
     }
 
     @Override
-    public void start(Stage primaryStage) throws Exception
+    public void start(Stage aPrimaryStage) throws Exception
     {
+        this.primaryStage = aPrimaryStage;
+
         primaryStage.setMaximized(true);
         primaryStage.setFullScreen(true);
         primaryStage.setTitle(Constants.STAGE_TITLE);
@@ -292,14 +296,13 @@ public class MainApplication extends Application implements KinectHelperCallback
         }
     }
 
-    private static void pixelScaleAwareCanvasSnapshot(Canvas canvas, double pixelScale)
+    private void pixelScaleAwareCanvasSnapshot(Canvas canvas, double pixelScale)
     {
         WritableImage writableImage = new WritableImage((int) Math.rint(pixelScale * canvas.getWidth()), (int) Math.rint(pixelScale * canvas.getHeight()));
         SnapshotParameters spa = new SnapshotParameters();
         spa.setTransform(Transform.scale(pixelScale, pixelScale));
 
-
-        File file = new File("CanvasImage.png");
+        File file = new File("images\\CanvasImage.png");
 
         Platform.runLater(
                 () ->
@@ -307,6 +310,7 @@ public class MainApplication extends Application implements KinectHelperCallback
                     try
                     {
                         ImageIO.write(SwingFXUtils.fromFXImage(canvas.snapshot(spa, writableImage), null), "png", file);
+                        repeater();
                     }
                     catch (Exception s)
                     {
@@ -317,53 +321,67 @@ public class MainApplication extends Application implements KinectHelperCallback
     }
 
 
-    public void repeater(){
-//        GridPane gridpane = new GridPane();
-//        Image image = new Image(new FileInputStream("images\\kaleidoscope.jpg"));
-//        ImageView imageView = new ImageView(image);
-//        imageView.setFitHeight(200);
-//        imageView.setFitWidth(300);
-//
-//        gridpane.add(imageView, 0, 0);
-//        ImageView imageView1 = new ImageView(image);
-//        imageView1.setFitHeight(200);
-//        imageView1.setFitWidth(300);
-//        gridpane.add(imageView1, 1, 0);
-//        ImageView imageView2 = new ImageView(image);
-//        imageView2.setFitHeight(200);
-//        imageView2.setFitWidth(300);
-//
-//        gridpane.add(imageView2, 2, 0);
-//        ImageView imageView3 = new ImageView(image);
-//        imageView3.setFitHeight(200);
-//        imageView3.setFitWidth(300);
-//        gridpane.add(imageView3, 0, 1);
-//        ImageView imageView4 = new ImageView(image);
-//        imageView4.setFitHeight(200);
-//        imageView4.setFitWidth(300);
-//        gridpane.add(imageView4, 1, 1);
-//        ImageView imageView5 = new ImageView(image);
-//        imageView5.setFitHeight(200);
-//        imageView5.setFitWidth(300);
-//        gridpane.add(imageView5, 2, 1);
-//        ImageView imageView6 = new ImageView(image);
-//        imageView6.setFitHeight(200);
-//        imageView6.setFitWidth(300);
-//        gridpane.add(imageView6, 0, 2);
-//        ImageView imageView7 = new ImageView(image);
-//        imageView7.setFitHeight(200);
-//        imageView7.setFitWidth(300);
-//        gridpane.add(imageView7, 1, 2);
-//        ImageView imageView8 = new ImageView(image);
-//        imageView8.setFitHeight(200);
-//        imageView8.setFitWidth(300);
-//        gridpane.add(imageView8, 2, 2);
-////        gridpane.getChildren().add(new ImageView(image));
-//        Scene scene = new Scene(gridpane, 900, 600);
-//        primaryStage.setScene(scene);
-//        primaryStage.show();
+    private void repeater()
+    {
+        GridPane gridpane = new GridPane();
+        Image image = null;
+        try
+        {
+            image = new Image(new FileInputStream("images\\CanvasImage.png"));
+        }
+        catch (FileNotFoundException e)
+        {
+            e.printStackTrace();
+            System.exit(1);
+        }
 
+        ImageView imageView = new ImageView(image);
+        imageView.setFitHeight(200);
+        imageView.setFitWidth(300);
+        gridpane.add(imageView, 0, 0);
 
+        ImageView imageView1 = new ImageView(image);
+        imageView1.setFitHeight(200);
+        imageView1.setFitWidth(300);
+        gridpane.add(imageView1, 1, 0);
 
+        ImageView imageView2 = new ImageView(image);
+        imageView2.setFitHeight(200);
+        imageView2.setFitWidth(300);
+        gridpane.add(imageView2, 2, 0);
+
+        ImageView imageView3 = new ImageView(image);
+        imageView3.setFitHeight(200);
+        imageView3.setFitWidth(300);
+        gridpane.add(imageView3, 0, 1);
+
+        ImageView imageView4 = new ImageView(image);
+        imageView4.setFitHeight(200);
+        imageView4.setFitWidth(300);
+        gridpane.add(imageView4, 1, 1);
+
+        ImageView imageView5 = new ImageView(image);
+        imageView5.setFitHeight(200);
+        imageView5.setFitWidth(300);
+        gridpane.add(imageView5, 2, 1);
+
+        ImageView imageView6 = new ImageView(image);
+        imageView6.setFitHeight(200);
+        imageView6.setFitWidth(300);
+        gridpane.add(imageView6, 0, 2);
+
+        ImageView imageView7 = new ImageView(image);
+        imageView7.setFitHeight(200);
+        imageView7.setFitWidth(300);
+        gridpane.add(imageView7, 1, 2);
+
+        ImageView imageView8 = new ImageView(image);
+        imageView8.setFitHeight(200);
+        imageView8.setFitWidth(300);
+        gridpane.add(imageView8, 2, 2);
+
+        Scene scene = new Scene(gridpane);
+        primaryStage.setScene(scene);
+        primaryStage.show();
     }
 }
