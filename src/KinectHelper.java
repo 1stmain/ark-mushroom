@@ -51,9 +51,11 @@ public class KinectHelper extends J4KSDK
         float rightHandX = skeleton.get2DJoint(Skeleton.HAND_RIGHT, Constants.STAGE_WIDTH, Constants.STAGE_HEIGHT)[0];
         float rightHandY = skeleton.get2DJoint(Skeleton.HAND_RIGHT, Constants.STAGE_WIDTH, Constants.STAGE_HEIGHT)[1];
         float rightHandZ = skeleton.get3DJointZ(Skeleton.HAND_RIGHT);
+        float leftHandX = skeleton.get2DJoint(Skeleton.HAND_LEFT, Constants.STAGE_WIDTH, Constants.STAGE_HEIGHT)[0];
+
         float leftHandY = skeleton.get2DJoint(Skeleton.HAND_LEFT, Constants.STAGE_WIDTH, Constants.STAGE_HEIGHT)[1];
         float headY = skeleton.get2DJoint(Skeleton.HEAD, Constants.STAGE_WIDTH, Constants.STAGE_HEIGHT)[1];
-
+        System.out.println(rightHandX + "" + rightHandY + " " + leftHandX + " " + leftHandY);
         if (!isInitialised)
         {
             oldRightZ = rightHandZ;
@@ -63,6 +65,10 @@ public class KinectHelper extends J4KSDK
         if (leftHandY < headY && rightHandY < headY)
         {
             kinectHelperCallback.onBothHandsRaised();
+        }
+
+        if( Math.abs(leftHandX - rightHandX) <=100 &&  Math.abs(rightHandY - leftHandY) <= 100){
+
         }
 
         if (rightHandZ < oldRightZ && oldRightZ - rightHandZ > 0.2)
