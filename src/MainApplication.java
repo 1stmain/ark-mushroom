@@ -33,6 +33,8 @@ public class MainApplication extends Application implements KinectHelperCallback
     private Cursor brushCursor;
     private float oldX;
     private float oldY;
+    private Image textureImage1;
+    private int bubbleFrameCount = 0;
     private Canvas textureCanvas;
     private boolean rightHandIsPushed = false;
     private ArrayList<TextureButton> textureButtons = new ArrayList<>();
@@ -97,13 +99,15 @@ public class MainApplication extends Application implements KinectHelperCallback
 
         brushCursor = new Cursor();
         brushCursor.setImage(new FileInputStream("images\\brush.png"));
+
+        initialiseTextures();
     }
 
     private void setTextureButtons()
     {
         try
         {
-            Image texture1 = new Image(new FileInputStream("images\\texture1.png"));
+            Image texture1 = new Image(new FileInputStream("images\\dots_texture.png"));
             ImageView textureImageView1 = new ImageView(texture1);
             TextureButton textureButton1 = new TextureButton(textureImageView1);
             textureButton1.setId(1);
@@ -113,14 +117,8 @@ public class MainApplication extends Application implements KinectHelperCallback
             TextureButton textureButton2 = new TextureButton(textureImageView2);
             textureButton2.setId(2);
 
-            Image texture3 = new Image(new FileInputStream("images\\texture3.jpg"));
-            ImageView textureImageView3 = new ImageView(texture3);
-            TextureButton textureButton3 = new TextureButton(textureImageView3);
-            textureButton3.setId(3);
-
             textureButtons.add(textureButton1);
             textureButtons.add(textureButton2);
-            textureButtons.add(textureButton3);
         }
         catch (FileNotFoundException e)
         {
@@ -133,7 +131,7 @@ public class MainApplication extends Application implements KinectHelperCallback
     {
         try
         {
-            Image picture1 = new Image(new FileInputStream("images\\picture1.jpeg"));
+            Image picture1 = new Image(new FileInputStream("images\\lotus_image.png"));
             ImageView pictureImageView1 = new ImageView(picture1);
             PictureButton pictureButton1 = new PictureButton(pictureImageView1, picture1);
             pictureButton1.setId(1);
@@ -143,14 +141,8 @@ public class MainApplication extends Application implements KinectHelperCallback
             PictureButton pictureButton2 = new PictureButton(pictureImageView2, picture2);
             pictureButton2.setId(2);
 
-            Image picture3 = new Image(new FileInputStream("images\\picture3.jpg"));
-            ImageView pictureImageView3 = new ImageView(picture3);
-            PictureButton pictureButton3 = new PictureButton(pictureImageView3, picture3);
-            pictureButton3.setId(3);
-
             pictureButtons.add(pictureButton1);
             pictureButtons.add(pictureButton2);
-            pictureButtons.add(pictureButton3);
         }
         catch (FileNotFoundException e)
         {
@@ -176,8 +168,14 @@ public class MainApplication extends Application implements KinectHelperCallback
                     switch (currentlySelectedButton.getId())
                     {
                         case 1:
-                            textureGraphicsContext.setFill(Color.BLUE);
-                            textureGraphicsContext.fillOval(x, y, 10, 10);
+                            bubbleFrameCount++;
+
+                            if (bubbleFrameCount > 4)
+                            {
+                                textureGraphicsContext.drawImage(textureImage1, x, y, 40, 40);
+                                bubbleFrameCount = 0;
+                            }
+
                             break;
                         case 2:
                             textureGraphicsContext.setFill(Color.GREEN);
@@ -279,6 +277,19 @@ public class MainApplication extends Application implements KinectHelperCallback
     {
         System.out.println("Program complete!");
         pixelScaleAwareCanvasSnapshot(textureCanvas, 0.5);
+    }
+
+    private void initialiseTextures()
+    {
+        try
+        {
+            textureImage1 = new Image(new FileInputStream("images\\dots_texture.png"));
+        }
+        catch (FileNotFoundException e)
+        {
+            e.printStackTrace();
+            System.exit(1);
+        }
     }
 
     private static void pixelScaleAwareCanvasSnapshot(Canvas canvas, double pixelScale)

@@ -60,17 +60,6 @@ public class KinectHelper extends J4KSDK
             isInitialised = true;
         }
 
-        /*System.out.println(oldRightZ + "" + rightHandZ);
-        if (oldRightY < rightHandY && rightHandY - oldRightY > 200)
-        {
-            System.out.println("swipe down ");
-        }
-        if (oldRightX < rightHandX && rightHandX - oldRightX > 200)
-        {
-            System.out.println("swipe right");
-        }
-        System.out.println(handpush + "" + rightHandZ + " " + oldRightZ);*/
-
         if (leftHandY < headY && rightHandY < headY)
         {
             kinectHelperCallback.onBothHandsRaised();
