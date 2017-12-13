@@ -3,6 +3,7 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.SnapshotParameters;
@@ -12,10 +13,7 @@ import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.transform.Transform;
 import javafx.stage.Stage;
@@ -42,6 +40,7 @@ public class MainApplication extends Application implements KinectHelperCallback
     private ArrayList<PictureButton> pictureButtons = new ArrayList<>();
     private Button currentlySelectedButton = null;
     private Stage primaryStage;
+    private KinectHelper kinect;
 
     public static void main(String[] args)
     {
@@ -51,7 +50,7 @@ public class MainApplication extends Application implements KinectHelperCallback
     @Override
     public void start(Stage aPrimaryStage) throws Exception
     {
-        this.primaryStage = aPrimaryStage;
+        primaryStage = aPrimaryStage;
 
         primaryStage.setMaximized(true);
         primaryStage.setFullScreen(true);
@@ -95,7 +94,7 @@ public class MainApplication extends Application implements KinectHelperCallback
         primaryStage.setScene(scene);
         primaryStage.show();
 
-        KinectHelper kinect = new KinectHelper(this);
+        kinect = new KinectHelper(this);
         kinect.start(J4KSDK.SKELETON);
 
         handCursor = new Cursor();
@@ -281,6 +280,7 @@ public class MainApplication extends Application implements KinectHelperCallback
     {
         System.out.println("Program complete!");
         pixelScaleAwareCanvasSnapshot(textureCanvas, 0.5);
+        kinect.stop();
     }
 
     private void initialiseTextures()
@@ -320,10 +320,12 @@ public class MainApplication extends Application implements KinectHelperCallback
                 });
     }
 
-
     private void repeater()
     {
-        GridPane gridpane = new GridPane();
+        TilePane tilePane = new TilePane(Orientation.HORIZONTAL);
+        tilePane.setPrefColumns(4);
+        tilePane.setAlignment(Pos.CENTER);
+        tilePane.setPrefRows(4);
         Image image = null;
         try
         {
@@ -335,53 +337,17 @@ public class MainApplication extends Application implements KinectHelperCallback
             System.exit(1);
         }
 
-        ImageView imageView = new ImageView(image);
-        imageView.setFitHeight(200);
-        imageView.setFitWidth(300);
-        gridpane.add(imageView, 0, 0);
+        for (int i = 0; i < 16; i++)
+        {
+            ImageView imageView = new ImageView(image);
+            imageView.setFitWidth(300);
+            imageView.setFitHeight(190);
+            tilePane.getChildren().add(imageView);
+        }
 
-        ImageView imageView1 = new ImageView(image);
-        imageView1.setFitHeight(200);
-        imageView1.setFitWidth(300);
-        gridpane.add(imageView1, 1, 0);
-
-        ImageView imageView2 = new ImageView(image);
-        imageView2.setFitHeight(200);
-        imageView2.setFitWidth(300);
-        gridpane.add(imageView2, 2, 0);
-
-        ImageView imageView3 = new ImageView(image);
-        imageView3.setFitHeight(200);
-        imageView3.setFitWidth(300);
-        gridpane.add(imageView3, 0, 1);
-
-        ImageView imageView4 = new ImageView(image);
-        imageView4.setFitHeight(200);
-        imageView4.setFitWidth(300);
-        gridpane.add(imageView4, 1, 1);
-
-        ImageView imageView5 = new ImageView(image);
-        imageView5.setFitHeight(200);
-        imageView5.setFitWidth(300);
-        gridpane.add(imageView5, 2, 1);
-
-        ImageView imageView6 = new ImageView(image);
-        imageView6.setFitHeight(200);
-        imageView6.setFitWidth(300);
-        gridpane.add(imageView6, 0, 2);
-
-        ImageView imageView7 = new ImageView(image);
-        imageView7.setFitHeight(200);
-        imageView7.setFitWidth(300);
-        gridpane.add(imageView7, 1, 2);
-
-        ImageView imageView8 = new ImageView(image);
-        imageView8.setFitHeight(200);
-        imageView8.setFitWidth(300);
-        gridpane.add(imageView8, 2, 2);
-
-        Scene scene = new Scene(gridpane);
+        Scene scene = new Scene(tilePane);
         primaryStage.setScene(scene);
-        primaryStage.show();
+        primaryStage.setMaximized(true);
+        primaryStage.setFullScreen(true);
     }
 }
