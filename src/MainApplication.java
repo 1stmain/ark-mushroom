@@ -12,6 +12,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.PixelReader;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -23,6 +24,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 public class MainApplication extends Application implements KinectHelperCallback
 {
@@ -41,10 +43,22 @@ public class MainApplication extends Application implements KinectHelperCallback
     private Button currentlySelectedButton = null;
     private Stage primaryStage;
     private KinectHelper kinect;
+    private Scene primaryScene;
+    private boolean drawingComplete = false;
 
     public static void main(String[] args)
     {
         launch(args);
+    }
+
+    private void restart()
+    {
+        drawingComplete = false;
+        bubbleFrameCount = 0;
+        currentlySelectedButton = null;
+        setBlackShadowToAllButtons();
+        textureGraphicsContext.clearRect(0, 0, Constants.STAGE_WIDTH, Constants.STAGE_HEIGHT);
+        cursorGraphicsContext.clearRect(0, 0, Constants.STAGE_WIDTH, Constants.STAGE_HEIGHT);
     }
 
     @Override
@@ -52,9 +66,26 @@ public class MainApplication extends Application implements KinectHelperCallback
     {
         primaryStage = aPrimaryStage;
 
+        primaryStage.setTitle(Constants.STAGE_TITLE);
+
+        StackPane stackPane = new StackPane();
+        stackPane.setAlignment(Pos.CENTER);
+
+        ImageView arkImageView = new ImageView("http://www.theark.in/images/logo_white.png");
+        arkImageView.setPreserveRatio(true);
+        arkImageView.setFitWidth(400);
+        arkImageView.setFitHeight(300);
+
+        stackPane.getChildren().addAll(arkImageView);
+
+        Scene launchScene = new Scene(stackPane);
+        launchScene.setFill(Color.web("#16272E"));
+        primaryStage.setScene(launchScene);
         primaryStage.setMaximized(true);
         primaryStage.setFullScreen(true);
-        primaryStage.setTitle(Constants.STAGE_TITLE);
+        primaryStage.show();
+
+        TimeUnit.SECONDS.sleep(5);
 
         VBox textureVBox = new VBox(32);
         textureVBox.setAlignment(Pos.CENTER);
@@ -89,10 +120,11 @@ public class MainApplication extends Application implements KinectHelperCallback
         StackPane rootStackPane = new StackPane(anchorPane, textureCanvas, cursorCanvas);
         rootStackPane.setAlignment(Pos.CENTER);
 
-        Scene scene = new Scene(rootStackPane);
+        primaryScene = new Scene(rootStackPane);
 
-        primaryStage.setScene(scene);
-        primaryStage.show();
+        primaryStage.setScene(primaryScene);
+        primaryStage.setMaximized(true);
+        primaryStage.setFullScreen(true);
 
         kinect = new KinectHelper(this);
         kinect.start(J4KSDK.SKELETON);
@@ -160,7 +192,7 @@ public class MainApplication extends Application implements KinectHelperCallback
         if (rightHandIsPushed)
         {
             // Draw the brush cursor
-            cursorGraphicsContext.clearRect(oldX, oldY, 200, 100);
+            cursorGraphicsContext.clearRect(oldX, oldY, 300, 100);
             brushCursor.setPosition(x, y);
             brushCursor.render(cursorGraphicsContext);
 
@@ -217,7 +249,7 @@ public class MainApplication extends Application implements KinectHelperCallback
             }
 
             // Draw the hand cursor
-            cursorGraphicsContext.clearRect(oldX, oldY, 200, 100);
+            cursorGraphicsContext.clearRect(oldX, oldY, 300, 100);
             handCursor.setPosition(x, y);
             handCursor.render(cursorGraphicsContext);
         }
@@ -278,15 +310,29 @@ public class MainApplication extends Application implements KinectHelperCallback
     @Override
     public void onBothHandsRaised()
     {
-        System.out.println("Program complete!");
-        pixelScaleAwareCanvasSnapshot(textureCanvas, 0.5);
+        if (!drawingComplete)
+        {
+            pixelScaleAwareCanvasSnapshot(textureCanvas, 1);
+        }
+        drawingComplete = true;
         kinect.stop();
     }
 
     @Override
     public void onBothHandsClasped()
     {
+        Platform.runLater(
+                () ->
+                {
+                    if (primaryStage.getScene() != primaryScene)
+                    {
+                        primaryStage.setScene(primaryScene);
+                        primaryStage.setFullScreen(true);
+                        primaryStage.setMaximized(true);
+                    }
+                });
 
+        restart();
     }
 
     private void initialiseTextures()
@@ -304,9 +350,8 @@ public class MainApplication extends Application implements KinectHelperCallback
 
     private void pixelScaleAwareCanvasSnapshot(Canvas canvas, double pixelScale)
     {
-        WritableImage writableImage = new WritableImage((int) Math.rint(pixelScale * canvas.getWidth()), (int) Math.rint(pixelScale * canvas.getHeight()));
-        SnapshotParameters spa = new SnapshotParameters();
-        spa.setTransform(Transform.scale(pixelScale, pixelScale));
+        WritableImage writableImage = new WritableImage(Constants.STAGE_WIDTH, Constants.STAGE_HEIGHT);
+        SnapshotParameters snapshotParameters = new SnapshotParameters();
 
         File file = new File("images\\CanvasImage.png");
 
@@ -315,7 +360,7 @@ public class MainApplication extends Application implements KinectHelperCallback
                 {
                     try
                     {
-                        ImageIO.write(SwingFXUtils.fromFXImage(canvas.snapshot(spa, writableImage), null), "png", file);
+                        ImageIO.write(SwingFXUtils.fromFXImage(canvas.snapshot(snapshotParameters, writableImage), null), "png", file);
                         repeater();
                     }
                     catch (Exception s)
@@ -332,6 +377,7 @@ public class MainApplication extends Application implements KinectHelperCallback
         tilePane.setPrefColumns(4);
         tilePane.setAlignment(Pos.CENTER);
         tilePane.setPrefRows(4);
+        WritableImage writableImage = null;
         Image image = null;
         try
         {

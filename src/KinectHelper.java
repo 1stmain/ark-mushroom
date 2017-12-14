@@ -65,10 +65,10 @@ public class KinectHelper extends J4KSDK
             kinectHelperCallback.onBothHandsRaised();
         }
 
-        if (Math.abs(leftHandX - rightHandX) <= 100 && Math.abs(rightHandY - leftHandY) <= 100)
+        /*if (Math.abs(leftHandX - rightHandX) <= 100 && Math.abs(rightHandY - leftHandY) <= 100)
         {
             kinectHelperCallback.onBothHandsClasped();
-        }
+        }*/
 
         if (rightHandZ < oldRightZ && oldRightZ - rightHandZ > 0.2)
         {
