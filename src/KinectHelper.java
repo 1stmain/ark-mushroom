@@ -53,7 +53,7 @@ public class KinectHelper extends J4KSDK
 
         float leftHandY = skeleton.get2DJoint(Skeleton.HAND_LEFT, Constants.STAGE_WIDTH, Constants.STAGE_HEIGHT)[1];
         float headY = skeleton.get2DJoint(Skeleton.HEAD, Constants.STAGE_WIDTH, Constants.STAGE_HEIGHT)[1];
-        System.out.println(rightHandX + "" + rightHandY + " " + leftHandX + " " + leftHandY);
+//        System.out.println(rightHandX + "" + rightHandY + " " + leftHandX + " " + leftHandY);
         if (!isInitialised)
         {
             oldRightZ = rightHandZ;
