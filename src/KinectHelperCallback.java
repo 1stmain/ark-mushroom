@@ -5,6 +5,4 @@ public interface KinectHelperCallback
     void onRightHandPushed(boolean rightHandIsPushed);
 
     void onBothHandsRaised();
-
-    void onBothHandsClasped();
 }

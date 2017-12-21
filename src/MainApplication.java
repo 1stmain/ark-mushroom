@@ -60,16 +60,6 @@ public class MainApplication extends Application implements KinectHelperCallback
         launch(args);
     }
 
-    private void restart()
-    {
-        drawingComplete = false;
-        bubbleFrameCount = 0;
-        currentlySelectedButton = null;
-        setBlackShadowToAllButtons();
-        textureGraphicsContext.clearRect(0, 0, Constants.STAGE_WIDTH, Constants.STAGE_HEIGHT);
-        cursorGraphicsContext.clearRect(0, 0, Constants.STAGE_WIDTH, Constants.STAGE_HEIGHT);
-    }
-
     @Override
     public void start(Stage aPrimaryStage) throws Exception
     {
@@ -387,23 +377,6 @@ public class MainApplication extends Application implements KinectHelperCallback
         }
         drawingComplete = true;
         kinect.stop();
-    }
-
-    @Override
-    public void onBothHandsClasped()
-    {
-        Platform.runLater(
-                () ->
-                {
-                    if (primaryStage.getScene() != primaryScene)
-                    {
-                        primaryStage.setScene(primaryScene);
-                        primaryStage.setFullScreen(true);
-                        primaryStage.setMaximized(true);
-                    }
-                });
-
-        restart();
     }
 
     private void initialiseTextures()
