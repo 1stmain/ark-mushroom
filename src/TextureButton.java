@@ -1,10 +1,8 @@
 import javafx.scene.image.ImageView;
 
-class TextureButton extends Button
-{
+class TextureButton extends Button {
 
-    TextureButton(ImageView imageView)
-    {
+    TextureButton(ImageView imageView) {
         super.imageView = imageView;
     }
 }

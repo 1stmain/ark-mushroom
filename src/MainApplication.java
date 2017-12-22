@@ -37,10 +37,10 @@ public class MainApplication extends Application implements KinectHelperCallback
     private Image textureImage1;
 
     private Image textureImage2;
-    private Image textureImage3;
-    private Image textureImage4;
-
-    private Image textureImage5;
+//    private Image textureImage3;
+//    private Image textureImage4;
+//
+//    private Image textureImage5;
     private  Image textureImage6;
 
 
@@ -66,8 +66,9 @@ public class MainApplication extends Application implements KinectHelperCallback
         primaryStage = aPrimaryStage;
 
         primaryStage.setTitle(Constants.STAGE_TITLE);
+        System.out.println("hey abhilash");
 
-        StackPane stackPane = new StackPane();
+        /*StackPane stackPane = new StackPane();
         stackPane.setAlignment(Pos.CENTER);
 
         ImageView arkImageView = new ImageView("http://www.theark.in/images/logo_white.png");
@@ -84,7 +85,7 @@ public class MainApplication extends Application implements KinectHelperCallback
         primaryStage.setFullScreen(true);
         primaryStage.show();
 
-        TimeUnit.SECONDS.sleep(5);
+        TimeUnit.SECONDS.sleep(5);*/
 
         VBox textureVBox = new VBox(32);
         textureVBox.setAlignment(Pos.CENTER);
@@ -105,7 +106,7 @@ public class MainApplication extends Application implements KinectHelperCallback
         }
 
         setBlackShadowToAllButtons();
-
+        System.out.println("hey abhilash 1");
         AnchorPane anchorPane = new AnchorPane(textureVBox, pictureVBox);
         AnchorPane.setLeftAnchor(textureVBox, 0.0);
         AnchorPane.setRightAnchor(pictureVBox, 0.0);
@@ -135,53 +136,30 @@ public class MainApplication extends Application implements KinectHelperCallback
         brushCursor.setImage(new FileInputStream("images\\brush.png"));
 
         initialiseTextures();
+
+        System.out.println("hey abhilash 2");
+        primaryStage.show();
     }
 
     private void setTextureButtons()
     {
         try
         {
-            Image texture1 = new Image(new FileInputStream("images\\dots_texture.png"));
+            Image texture1 = new Image(new FileInputStream("images\\texture_dots.png"));
             ImageView textureImageView1 = new ImageView(texture1);
             TextureButton textureButton1 = new TextureButton(textureImageView1);
             textureButton1.setId(1);
 
-            Image texture2 = new Image(new FileInputStream("images\\texture2.jpg"));
+            Image texture2 = new Image(new FileInputStream("images\\texture_tear.png"));
             ImageView textureImageView2 = new ImageView(texture2);
             TextureButton textureButton2 = new TextureButton(textureImageView2);
             textureButton2.setId(2);
 
-            Image texture3 = new Image(new FileInputStream("images\\red_brush.png"));
-            ImageView textureImageView3 = new ImageView(texture3);
-            TextureButton textureButton3 = new TextureButton(textureImageView3);
-            textureButton3.setId(3);
 
-            Image texture4 = new Image(new FileInputStream("images\\8251.png"));
-            ImageView textureImageView4 = new ImageView(texture4);
-            TextureButton textureButton4 = new TextureButton(textureImageView4);
-            textureButton4.setId(4);
-
-            Image texture5 = new Image(new FileInputStream("images\\colorFull.png"));
-            ImageView textureImageView5 = new ImageView(texture5);
-            TextureButton textureButton5 = new TextureButton(textureImageView5);
-            textureButton5.setId(5);
-
-            Image texture6 = new Image(new FileInputStream("images\\multicolor.png"));
-            ImageView textureImageView6 = new ImageView(texture6);
-            TextureButton textureButton6 = new TextureButton(textureImageView6);
-            textureButton6.setId(6);
 
 
             textureButtons.add(textureButton1);
             textureButtons.add(textureButton2);
-
-            textureButtons.add(textureButton3);
-
-            textureButtons.add(textureButton4);
-
-            textureButtons.add(textureButton5);
-
-            textureButtons.add(textureButton6);
         }
         catch (FileNotFoundException e)
         {
@@ -194,20 +172,21 @@ public class MainApplication extends Application implements KinectHelperCallback
     {
         try
         {
-            Image picture1 = new Image(new FileInputStream("images\\lotus_image.png"));
+            Image picture1 = new Image(new FileInputStream("images\\Symbol_Bird.png"));
             ImageView pictureImageView1 = new ImageView(picture1);
             PictureButton pictureButton1 = new PictureButton(pictureImageView1, picture1);
             pictureButton1.setId(1);
 
-            Image picture2 = new Image(new FileInputStream("images\\peacock.png"));
+            Image picture2 = new Image(new FileInputStream("images\\Symbol_flower.png"));
             ImageView pictureImageView2 = new ImageView(picture2);
             PictureButton pictureButton2 = new PictureButton(pictureImageView2, picture2);
             pictureButton2.setId(2);
 
-            Image picture3 = new Image(new FileInputStream("images\\peacock.png"));
+            Image picture3 = new Image(new FileInputStream("images\\lotus_image.png"));
             ImageView pictureImageView3 = new ImageView(picture3);
             PictureButton pictureButton3 = new PictureButton(pictureImageView3, picture3);
-            pictureButton3.setId(3);
+            pictureButton2.setId(3);
+
 
             pictureButtons.add(pictureButton1);
             pictureButtons.add(pictureButton2);
@@ -254,33 +233,6 @@ public class MainApplication extends Application implements KinectHelperCallback
                             }
 
                             break;
-                        case 3:
-                            bubbleFrameCount++;
-
-                            if (bubbleFrameCount > 4)
-                            {
-                                textureGraphicsContext.drawImage(textureImage3, x, y, 40, 20);
-                                bubbleFrameCount = 0;
-                            }
-                            break;
-                        case 4:
-                            bubbleFrameCount++;
-
-                            if (bubbleFrameCount > 4)
-                            {
-                                textureGraphicsContext.drawImage(textureImage4, x, y, 40, 20);
-                                bubbleFrameCount = 0;
-                            }
-                            break;
-                        case 5:
-                            bubbleFrameCount++;
-
-                            if (bubbleFrameCount > 4)
-                            {
-                                textureGraphicsContext.drawImage(textureImage5, x, y, 40, 20);
-                                bubbleFrameCount = 0;
-                            }
-                            break;
                         default:
                             break;
                     }
@@ -288,26 +240,27 @@ public class MainApplication extends Application implements KinectHelperCallback
             }
             else if (currentlySelectedButton != null && currentlySelectedButton.getClass() == PictureButton.class)
             {
-                System.out.println("selected button                            ");
+                System.out.println("selected button");
                 cursorGraphicsContext.drawImage(((PictureButton) currentlySelectedButton).getImage(), x, y);
             }
         }
         else
         {
             if (currentlySelectedButton != null && currentlySelectedButton.getClass() == PictureButton.class)
+        {
+//            System.out.println(x  + "," + y);
+            if (x >= 250 && x <= 900)
             {
-                if (x >= 250 && x <= 1300)
-                {
-                    textureGraphicsContext.drawImage(((PictureButton) currentlySelectedButton).getImage(), x, y);
-                    currentlySelectedButton = null;
-                    setBlackShadowToAllButtons();
-                }
-                else
-                {
-                    currentlySelectedButton = null;
-                    setBlackShadowToAllButtons();
-                }
+                textureGraphicsContext.drawImage(((PictureButton) currentlySelectedButton).getImage(), x, y);
+                currentlySelectedButton = null;
+                setBlackShadowToAllButtons();
             }
+            else
+            {
+                currentlySelectedButton = null;
+                setBlackShadowToAllButtons();
+            }
+        }
 
             // Draw the hand cursor
             cursorGraphicsContext.clearRect(oldX, oldY, 300, 100);
@@ -383,14 +336,8 @@ public class MainApplication extends Application implements KinectHelperCallback
     {
         try
         {
-            textureImage1 = new Image(new FileInputStream("images\\dots_texture.png"));
-            textureImage2 = new Image(new FileInputStream("images\\texture2.jpg"));
-            textureImage3 = new Image(new FileInputStream("images\\red_brush.png"));
-            textureImage4 = new Image(new FileInputStream("images\\8251.png"));
-
-            textureImage5 = new Image(new FileInputStream("images\\colorFull.png"));
-
-            textureImage6 = new Image(new FileInputStream("images\\multicolor.png"));
+            textureImage1 = new Image(new FileInputStream("images\\texture_dots.png"));
+            textureImage2 = new Image(new FileInputStream("images\\texture_tear.png"));
 
         }
         catch (FileNotFoundException e)
@@ -415,7 +362,7 @@ public class MainApplication extends Application implements KinectHelperCallback
                         Image image = new Image(new FileInputStream("images\\CanvasImage.png"));
 
                         PixelReader reader = image.getPixelReader();
-                        WritableImage newImage = new WritableImage(reader, 250, 0, 1036, 768);
+                        WritableImage newImage = new WritableImage(reader, 250, 0, 800, 768);
                         ImageIO.write(SwingFXUtils.fromFXImage(newImage, null), "png", file);
                         repeater();
                     }
@@ -445,11 +392,11 @@ public class MainApplication extends Application implements KinectHelperCallback
             System.exit(1);
         }
 
-        for (int i = 0; i < 16; i++)
+        for (int i = 0; i < 12; i++)
         {
             ImageView imageView = new ImageView(image);
-            imageView.setFitWidth(384);
-            imageView.setFitHeight(185);
+            imageView.setFitWidth(300);
+            imageView.setFitHeight(271);
             tilePane.getChildren().add(imageView);
         }
 
