@@ -16,7 +16,6 @@ import javafx.scene.image.PixelReader;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.transform.Transform;
 import javafx.stage.Stage;
 
 import javax.imageio.ImageIO;
@@ -24,7 +23,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
 
 public class MainApplication extends Application implements KinectHelperCallback
 {
@@ -37,12 +35,6 @@ public class MainApplication extends Application implements KinectHelperCallback
     private Image textureImage1;
 
     private Image textureImage2;
-//    private Image textureImage3;
-//    private Image textureImage4;
-//
-//    private Image textureImage5;
-    private  Image textureImage6;
-
 
     private int bubbleFrameCount = 0;
     private Canvas textureCanvas;
@@ -67,25 +59,6 @@ public class MainApplication extends Application implements KinectHelperCallback
 
         primaryStage.setTitle(Constants.STAGE_TITLE);
         System.out.println("hey abhilash");
-
-        /*StackPane stackPane = new StackPane();
-        stackPane.setAlignment(Pos.CENTER);
-
-        ImageView arkImageView = new ImageView("http://www.theark.in/images/logo_white.png");
-        arkImageView.setPreserveRatio(true);
-        arkImageView.setFitWidth(400);
-        arkImageView.setFitHeight(300);
-
-        stackPane.getChildren().addAll(arkImageView);
-
-        Scene launchScene = new Scene(stackPane);
-        launchScene.setFill(Color.web("#16272E"));
-        primaryStage.setScene(launchScene);
-        primaryStage.setMaximized(true);
-        primaryStage.setFullScreen(true);
-        primaryStage.show();
-
-        TimeUnit.SECONDS.sleep(5);*/
 
         VBox textureVBox = new VBox(32);
         textureVBox.setAlignment(Pos.CENTER);
@@ -143,59 +116,52 @@ public class MainApplication extends Application implements KinectHelperCallback
 
     private void setTextureButtons()
     {
-        try
-        {
-            Image texture1 = new Image(new FileInputStream("images\\texture_dots.png"));
-            ImageView textureImageView1 = new ImageView(texture1);
-            TextureButton textureButton1 = new TextureButton(textureImageView1);
-            textureButton1.setId(1);
+        TextureButton textureButton1 = assignTextureImg("images\\texture_dots.png",1);
+        TextureButton textureButton2 = assignTextureImg("images\\texture_tear.png", 2);
 
-            Image texture2 = new Image(new FileInputStream("images\\texture_tear.png"));
-            ImageView textureImageView2 = new ImageView(texture2);
-            TextureButton textureButton2 = new TextureButton(textureImageView2);
-            textureButton2.setId(2);
+        textureButtons.add(textureButton1);
+        textureButtons.add(textureButton2);
+    }
 
+    private TextureButton assignTextureImg(String imgPath, int id) {
+        try {
+            Image texture = new Image(new FileInputStream(imgPath));
+            ImageView textureImageView = new ImageView(texture);
+            TextureButton textureButton = new TextureButton(textureImageView);
+            textureButton.setId(id);
+            return textureButton;
 
-
-
-            textureButtons.add(textureButton1);
-            textureButtons.add(textureButton2);
         }
-        catch (FileNotFoundException e)
-        {
+        catch (FileNotFoundException e) {
             e.printStackTrace();
             System.exit(1);
+            return null;
         }
     }
 
     private void setPictureButtons()
     {
-        try
-        {
-            Image picture1 = new Image(new FileInputStream("images\\Symbol_Bird.png"));
-            ImageView pictureImageView1 = new ImageView(picture1);
-            PictureButton pictureButton1 = new PictureButton(pictureImageView1, picture1);
-            pictureButton1.setId(1);
+        PictureButton pictureButton1 = assignPictureImg("images\\Symbol_Bird.png",1);
+        PictureButton pictureButton2 = assignPictureImg("images\\Symbol_flower.png",2);
+        PictureButton pictureButton3 = assignPictureImg("images\\lotus_image.png",3);
 
-            Image picture2 = new Image(new FileInputStream("images\\Symbol_flower.png"));
-            ImageView pictureImageView2 = new ImageView(picture2);
-            PictureButton pictureButton2 = new PictureButton(pictureImageView2, picture2);
-            pictureButton2.setId(2);
+        pictureButtons.add(pictureButton1);
+        pictureButtons.add(pictureButton2);
+        pictureButtons.add(pictureButton3);
+    }
 
-            Image picture3 = new Image(new FileInputStream("images\\lotus_image.png"));
-            ImageView pictureImageView3 = new ImageView(picture3);
-            PictureButton pictureButton3 = new PictureButton(pictureImageView3, picture3);
-            pictureButton2.setId(3);
-
-
-            pictureButtons.add(pictureButton1);
-            pictureButtons.add(pictureButton2);
-            pictureButtons.add(pictureButton3);
+    private PictureButton assignPictureImg(String imgPath, int id) {
+        try {
+            Image picture = new Image(new FileInputStream(imgPath));
+            ImageView pictureImageView = new ImageView(picture);
+            PictureButton textureButton = new PictureButton(pictureImageView, picture);
+            textureButton.setId(id);
+            return textureButton;
         }
-        catch (FileNotFoundException e)
-        {
+        catch (FileNotFoundException e) {
             e.printStackTrace();
             System.exit(1);
+            return null;
         }
     }
 
@@ -279,14 +245,14 @@ public class MainApplication extends Application implements KinectHelperCallback
 
         if (rightHandIsPushed)
         {
-            for (TextureButton textureButton : this.textureButtons)
+            for (Button textureButton : this.textureButtons)
             {
                 if (textureButton.getImageView().getBoundsInParent().intersects(handCursor.getPositionX(),
                         handCursor.getPositionY(), handCursor.getWidth(), handCursor.getHeight()))
                 {
                     setBlackShadowToAllButtons();
                     currentlySelectedButton = textureButton;
-                    DropShadow dropShadowRed = new DropShadow(16, Color.RED);
+                    DropShadow dropShadowRed = new DropShadow(50, Color.GREEN);
                     currentlySelectedButton.getImageView().setEffect(dropShadowRed);
                     break;
                 }
